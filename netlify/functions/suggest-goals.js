@@ -1,22 +1,20 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+require('dotenv').config();
 
-// Try ESM import, fall back to CommonJS require for dotenv
-let dotenv;
-try {
-  dotenv = await import('dotenv');
-} catch (e) {
-  dotenv = require('dotenv');
-}
-dotenv.config();
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+exports.handler = async function (event, context) {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    };
   }
 
-  const { prompt } = req.body;
+  const { prompt } = JSON.parse(event.body);
   if (!prompt) {
-    return res.status(400).json({ error: 'Prompt is required' });
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Prompt is required' }),
+    };
   }
 
   try {
@@ -51,9 +49,16 @@ export default async function handler(req, res) {
 
     console.log('Cleaned Gemini response:', cleanedResponse);
     const suggestions = JSON.parse(cleanedResponse) || ['Complete a small task today', 'Take a 10-minute walk', 'Plan tomorrow’s goals'];
-    res.status(200).json({ suggestions });
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ suggestions }),
+    };
   } catch (error) {
     console.error('Error in suggest-goals:', error.message, error.stack);
-    res.status(500).json({ error: 'Internal server error: ' + error.message });
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error: ' + error.message }),
+    };
   }
-}
+};

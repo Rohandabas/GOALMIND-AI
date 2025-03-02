@@ -151,19 +151,22 @@ function GoalModal({ isOpen, onClose, onAddGoal }) {
     setIsLoadingSuggestions(true);
     setSuggestionError(null);
     try {
-      const response = await fetch('/api/suggest-goals', {
+      console.log('Fetching suggestions for prompt:', userInput);
+      const response = await fetch('/.netlify/functions/suggest-goals', {  // Updated path for Netlify
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': import.meta.env.VITE_GEMINI_API_KEY || 'mysecretkey123', // Ensure this matches API_SECRET
+          'x-api-key': import.meta.env.VITE_GEMINI_API_KEY || 'mysecretkey123',
         },
         body: JSON.stringify({ prompt: userInput }),
       });
       if (!response.ok) {
         const errorText = await response.text(); // Log the full response for debugging
+        console.error('API response error:', errorText);
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
       const data = await response.json();
+      console.log('API response data:', data);
       setAiSuggestions(data.suggestions || []);
     } catch (error) {
       setSuggestionError('Failed to load suggestions: ' + error.message);

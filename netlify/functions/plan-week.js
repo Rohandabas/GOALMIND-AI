@@ -1,22 +1,20 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+require('dotenv').config();
 
-// Try ESM import, fall back to CommonJS require for dotenv
-let dotenv;
-try {
-  dotenv = await import('dotenv');
-} catch (e) {
-  dotenv = require('dotenv');
-}
-dotenv.config();
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+exports.handler = async function (event, context) {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    };
   }
 
-  const { summary } = req.body;
+  const { summary } = JSON.parse(event.body);
   if (!summary) {
-    return res.status(400).json({ error: 'Weekly goal summary is required' });
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Weekly goal summary is required' }),
+    };
   }
 
   try {
@@ -59,9 +57,15 @@ export default async function handler(req, res) {
       Saturday: [{ text: 'Outdoor activity', category: 'Health' }],
     };
 
-    res.status(200).json({ weeklyPlan });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ weeklyPlan }),
+    };
   } catch (error) {
     console.error('Error in plan-week:', error.message, error.stack);
-    res.status(500).json({ error: 'Internal server error: ' + error.message });
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error: ' + error.message }),
+    };
   }
-}
+};

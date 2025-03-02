@@ -122,7 +122,6 @@
 // }
 
 // export default WeeklyPlanModal;
-
 import React, { useState } from 'react';
 import { FaCalendar, FaCheckCircle } from 'react-icons/fa';
 
@@ -139,7 +138,7 @@ function WeeklyPlanModal({ isOpen, onClose, onAddGoal }) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/plan-week', {
+      const response = await fetch('/.netlify/functions/plan-week', {  // Updated path for Netlify
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
