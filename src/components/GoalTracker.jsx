@@ -197,7 +197,7 @@ function GoalTracker() {
           </button>
         </div>
       </header>
-      <main className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <main className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-19">
         {days.map((day, index) => (
           <DayGoals
             key={day}
