@@ -86,7 +86,7 @@ function Home() {
 
       {/* Footer - Simple and fixed at bottom */}
       <footer className="w-full p-4 bg-gray-950/80 backdrop-blur-sm shadow-lg rounded-lg fixed bottom-0 left-0 right-0 z-50 transform animate-fadeIn">
-        <p className="text-gray-400 text-center text-sm">© 2025 GoalMind AI. All rights reserved.</p>
+        <p className="text-gray-400 text-center text-sm"> GoalMind AI.</p>
       </footer>
     </div>
   );
